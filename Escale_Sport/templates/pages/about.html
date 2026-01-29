@@ -1,0 +1,141 @@
+
+{% load static %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<nav class="bg-[#131a26] shadow-lg sticky top-0 z-50 w-full">
+  <div class="flex items-center justify-between px-4 py-3">
+    <!-- صورة المؤسسة (كبيرة دائماً) -->
+    <div class="flex-shrink-0">
+      <img src="{% static 'images/logo2.png' %}" alt="شعار المؤسسة"
+           class="h-46 md:h-24 w-auto object-contain transition-all duration-200" style="max-width:240px;">
+    </div>
+
+    <!-- محتوى النافبار الكبير -->
+    <div class="hidden lg:flex items-center gap-4">
+      <!-- لغة -->
+      <div class="relative group">
+        <button id="langBtn" class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 flex items-center gap-2 focus:outline-none text-white">
+          {% comment %} <i class="fas fa-language text-xl"></i> {% endcomment %}
+          <span id="currentLang text-white">Français</span>
+        </button>
+        <div id="langMenu" class="absolute left-0 mt-2 w-32 bg-white text-gray-900 rounded-lg shadow-lg hidden z-50">
+          <button onclick="setLanguage('Français')" class="block px-4 py-2 hover:bg-gray-200 w-full text-left">Français</button>
+          <button onclick="setLanguage('العربية')" class="block px-4 py-2 hover:bg-gray-200 w-full text-left">العربية</button>
+        </div>
+      </div>
+      <!-- الوضع -->
+      <button id="themeToggle" class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 flex items-center gap-1 focus:outline-none" aria-label="Dark/Light mode">
+        <i class="fa-solid fa-moon text-xl hidden text-white" id="moonIcon"></i>
+        {% comment %} <i class="fa-solid fa-sun text-xl hidden" id="sunIcon"></i>
+        <span id="themeText" class="ml-1 text-sm">داكن</span> {% endcomment %}
+      </button>
+      <!-- تسجيل الدخول -->
+      <a href="{% url 'login' %}" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center gap-2">
+        <i class="fa-solid fa-user"></i>
+        <span>تسجيل الدخول</span>
+      </a>
+      <!-- السلة -->
+      <a href="#" class="relative">
+        <i class="fa-solid fa-shopping-cart text-2xl text-white"></i>
+        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+      </a>
+    </div>
+
+    <!-- شاشة الموبايل: فقط صورة المؤسسة + دخول + سايدبار -->
+    <div class="flex  lg:hidden  items-center gap-10">
+       <div class="relative group">
+        <button id="langBtn" class="px-3 w-25 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 flex items-center gap-2 focus:outline-none text-white text-4xl">
+          {% comment %} <i class="fas fa-language text-xl"></i> {% endcomment %}
+          <span id="currentLang text-white text-4xl">Français</span>
+        </button>
+        <div id="langMenu" class="absolute left-0 mt-2 w-32 bg-white text-gray-900 rounded-lg shadow-lg hidden z-50">
+          <button onclick="setLanguage('Français')" class="block px-4 py-2 hover:bg-gray-200 w-full text-left text-4xl">Français</button>
+          <button onclick="setLanguage('العربية')" class="block px-4 py-2 hover:bg-gray-200 w-full text-l text-4xleft">العربية</button>
+        </div>
+      </div>
+
+      <a href="{% url 'login' %}" class="px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center gap-1">
+        <i class="fa-solid fa-user text-4xl"></i>
+      </a>
+      <button id="sidebarOpenBtn" class="p-3 rounded-lg hover:bg-gray-700">
+        <i class="fa-solid fa-bars text-white text-4xl"></i>
+      </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- سايدبار -->
+  <div id="sidebar" class="fixed top-0 left-0 h-full w-72 max-w-full bg-[#141a28] text-white shadow-2xl z-[100] transform -translate-x-full transition-transform duration-300">
+    <div class="flex flex-col gap-6 p-6 pt-8 relative h-full">
+      <!-- صورة المؤسسة (كبيرة) -->
+      <img src="{% static 'images/logo2.png' %}" alt="شعار المؤسسة" class="h-20 w-auto mx-auto mb-4 object-contain" style="max-width:200px;">
+      <!-- باقي العناصر -->
+      <button onclick="setLanguage('Français')" class="block w-full px-4 py-2 rounded bg-gray-800 mb-2 text-left">Français</button>
+      <button onclick="setLanguage('العربية')" class="block w-full px-4 py-2 rounded bg-gray-800 mb-2 text-left">العربية</button>
+      <button id="themeToggleSidebar" class="block w-full px-4 py-2 rounded bg-gray-800 mb-2 text-left">تبديل الوضع</button>
+      <a href="#" class="relative block w-full px-4 py-2 rounded bg-gray-800 mb-2 text-left">
+        <i class="fa-solid fa-shopping-cart"></i>
+        <span id="cartCountSidebar" class="ml-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">0</span>
+      </a>
+      <a href="{% url 'login' %}" class="block w-full px-4 py-2 rounded bg-blue-700 mb-2 text-center">تسجيل الدخول</a>
+      <!-- زر إغلاق -->
+      <button id="sidebarCloseBtn" class="absolute top-2 right-2 text-2xl bg-gray-700 rounded-full p-1 hover:bg-red-600 transition">×</button>
+    </div>
+  </div>
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-[90]"></div>
+</nav>
+
+<!-- روابط الخطوط والأيقونات (ضعها في <head> أو في base.html) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<script>
+/* سايدبار: يظهر ويختفي */
+const sidebarBtn = document.getElementById('sidebarOpenBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+const closeBtn = document.getElementById('sidebarCloseBtn');
+
+sidebarBtn.onclick = function() {
+  sidebar.classList.remove('-translate-x-full');
+  overlay.classList.remove('hidden');
+};
+closeBtn.onclick = overlay.onclick = function() {
+  sidebar.classList.add('-translate-x-full');
+  overlay.classList.add('hidden');
+};
+
+/* تبديل الوضع */
+function toggleTheme(){
+  const html = document.documentElement;
+  html.classList.toggle('dark');
+  document.getElementById('moonIcon').classList.toggle('hidden');
+  document.getElementById('sunIcon').classList.toggle('hidden');
+  document.getElementById('themeText').textContent = html.classList.contains('dark') ? 'فاتح' : 'داكن';
+}
+document.getElementById('themeToggle').onclick = toggleTheme;
+document.getElementById('themeToggleSidebar').onclick = toggleTheme;
+
+/* تبديل اللغة */
+function setLanguage(lang) {
+  document.getElementById('currentLang').textContent = lang;
+  localStorage.setItem('selectedLanguage', lang);
+  // (ضع هنا كود الترجمة الفعلي)
+}
+/* قائمة اللغة (dropdown) */
+document.getElementById('langBtn').onclick = function(e){
+  e.stopPropagation();
+  document.getElementById('langMenu').classList.toggle('hidden');
+};
+document.addEventListener('click', function(){
+  document.getElementById('langMenu').classList.add('hidden');
+});
+
+/* تحديث عدد السلة من localStorage أو من الباكند */
+function updateCartCount() {
+  let count = localStorage.getItem('cartCount') || 0;
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartCountSidebar').textContent = count;
+}
+updateCartCount();
+</script>
