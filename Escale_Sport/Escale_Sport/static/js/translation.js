@@ -49,70 +49,8 @@ window.onload = function () {
 };
 
   function applyLanguage(lang) {
-    const currentLangLabel = document.getElementById('currentLangLabel');
-    const currentLangLabelMobile = document.getElementById('currentLangLabelMobile');
-    const currentLangFlag = document.getElementById('currentLangFlag');
-    const currentLangFlagMobile = document.getElementById('currentLangFlagMobile');
-    
-    // Update labels
-    if (currentLangLabel) currentLangLabel.textContent = lang;
-    if (currentLangLabelMobile) currentLangLabelMobile.textContent = lang;
-    
-    // Update flags
-    const flagClass = lang === 'Français' ? 'flag-fr' : 'flag-mr';
-    if (currentLangFlag) {
-      currentLangFlag.className = 'lang-flag ' + flagClass;
-    }
-    if (currentLangFlagMobile) {
-      currentLangFlagMobile.className = 'lang-flag ' + flagClass;
-    }
-    
-    // Update sidebar content
-    const welcomeAr = document.getElementById('sidebar-welcome-ar');
-    const welcomeFr = document.getElementById('sidebar-welcome-fr');
-    const categoriesTitle = document.getElementById('sidebar-categories-title');
-    const showAllBtn = document.getElementById('sidebar-show-all-btn');
-    const sidebarHeaderLine = document.getElementById('sidebar-header-line');
-    
-    if (lang === 'العربية') {
-      // Update welcome message
-      if (welcomeAr) welcomeAr.classList.remove('hidden');
-      if (welcomeFr) welcomeFr.classList.add('hidden');
-      
-      // Update categories title
-      if (categoriesTitle) categoriesTitle.textContent = 'الفئات المختلفة';
-      
-      // Update direction to RTL for header line
-      if (sidebarHeaderLine) {
-        sidebarHeaderLine.setAttribute('dir', 'rtl');
-      }
-      
-      // Update show all button
-      if (showAllBtn) {
-        const allCategoriesGrid = document.getElementById('all-categories-grid');
-        const isShowingAll = allCategoriesGrid && !allCategoriesGrid.classList.contains('hidden');
-        showAllBtn.textContent = isShowingAll ? 'أقل' : 'المزيد';
-      }
-    } else {
-      // Update welcome message
-      if (welcomeAr) welcomeAr.classList.add('hidden');
-      if (welcomeFr) welcomeFr.classList.remove('hidden');
-      
-      // Update categories title
-      if (categoriesTitle) categoriesTitle.textContent = 'les different category';
-      
-      // Update direction to LTR for header line
-      if (sidebarHeaderLine) {
-        sidebarHeaderLine.setAttribute('dir', 'ltr');
-      }
-      
-      // Update show all button
-      if (showAllBtn) {
-        const allCategoriesGrid = document.getElementById('all-categories-grid');
-        const isShowingAll = allCategoriesGrid && !allCategoriesGrid.classList.contains('hidden');
-        showAllBtn.textContent = isShowingAll ? 'moins' : 'plus';
-      }
-    }
+    document.getElementById('currentLangLabel').textContent = lang;
+    document.getElementById('currentLangLabelMobile').textContent = lang;
 
 
     // Headings
@@ -146,16 +84,16 @@ window.onload = function () {
       price.forEach(element => element.textContent = translations[lang].price[0]);
     }
 
-
+    
     if(lang=='العربية'){
       const arElements = document.querySelectorAll('[id^="ar"]');
 
       // Select all elements with ID starting with 'fr'
       const frElements = document.querySelectorAll('[id^="fr"]');
-
+      
       // Remove "hidden" class from all elements with ID starting with 'ar'
       arElements.forEach(element => element.classList.remove("hidden"));
-
+      
       // Add "hidden" class to all elements with ID starting with 'fr'
       frElements.forEach(element => element.classList.add("hidden"));
     }else{
@@ -163,14 +101,14 @@ window.onload = function () {
 
       // Select all elements with ID starting with 'fr'
       const frElements = document.querySelectorAll('[id^="fr"]');
-
+      
       // Remove "hidden" class from all elements with ID starting with 'ar'
       arElements.forEach(element => element.classList.add("hidden"));
-
+      
       // Add "hidden" class to all elements with ID starting with 'fr'
       frElements.forEach(element => element.classList.remove("hidden"));
     }
-
+   
 
 
     // Set direction
@@ -193,7 +131,7 @@ window.onload = function () {
       }
     };
 
-
+    
 
     const testMobile = document.getElementById("test-mobile");
     function hideLangMenuMobile(event) {
@@ -201,7 +139,7 @@ window.onload = function () {
         langMenuMobile.classList.add("hidden");
       }
     };
-
+    
     document.getElementById("langBtn").onclick = function(e) {
       e.stopPropagation();
       document.getElementById("langMenu").classList.toggle("hidden");
@@ -219,7 +157,7 @@ window.onload = function () {
   }
 
   document.addEventListener("click", function(e) {
-
+  
     if (!document.getElementById("test").contains(e.target)) {
       document.getElementById("langMenu").classList.add("hidden");
     }
@@ -243,4 +181,25 @@ window.onload = function () {
 
 
 
-//sidebar - handled in navbar.html to avoid conflicts
+//sidebar
+const sidebarBtn = document.getElementById('sidebarOpenBtn');
+const sidebar = document.getElementById('sidebar');
+const closeBtn = document.getElementById('sidebarCloseBtn');
+
+sidebarBtn.onclick = function() {
+  sidebar.classList.remove('translate-x-full');
+};
+closeBtn.onclick = function() {
+  sidebar.classList.add('translate-x-full');
+};
+window.addEventListener("scroll", () => {
+    sidebar.classList.add('translate-x-full');
+});
+
+document.addEventListener("click", function(e) {
+  
+  if (!sidebarBtn.contains(e.target)) {
+    sidebar.classList.add('translate-x-full');
+  }
+
+});
