@@ -1,0 +1,844 @@
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          customBlue: '#2B82C3',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  [dir="rtl"] body { text-align: right; }
+  [dir="rtl"] .text-left { text-align: right; }
+  [dir="rtl"] .text-right { text-align: left; }
+  
+  /* Language Menu Styles */
+  .lang-menu {
+    animation: slideDown 0.3s ease-out;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .lang-option {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .lang-option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: linear-gradient(135deg, #2B82C3, #1e5a8a);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .lang-option:hover::before {
+    transform: scaleY(1);
+  }
+  
+  .lang-flag {
+    width: 28px;
+    height: 20px;
+    border-radius: 4px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  
+  .flag-fr {
+    background: linear-gradient(to right, #002654 0%, #002654 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #ED2939 66.66%, #ED2939 100%);
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .flag-mr {
+    background: linear-gradient(to bottom, #17cf79 0%, #00A859 50%, #FFD700 50%, #FFD700 100%);
+    border: 1px solid rgba(0,0,0,0.1);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .flag-mr::before {
+    content: '☪';
+    position: absolute;
+    font-size: 14px;
+    color: #FFD700;
+    text-shadow: 0 0 2px rgba(0,0,0,0.3);
+  }
+  
+  /* Sidebar Styles */
+  /* Prevent body scroll when sidebar is open */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+  
+  /* Sidebar panel - Full screen, solid background */
+  #sidebar {
+    background: #1a202c;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  /* Sidebar dimensions, centering, and animations */
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 88%;
+    max-height: 82vh;
+    height: 82vh;
+    z-index: 100;
+    margin-left: auto;
+    margin-right: auto;
+    transform: translateX(-50%) translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease, box-shadow 0.4s ease;
+    border-radius: 12px;
+    opacity: 0;
+    box-shadow: 0 0 0 rgba(136, 125, 125, 0);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  /* Content: header + scrollable nav + fixed CTA at bottom (always visible) */
+  #sidebarContent {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Only categories scroll; CTA button always visible at bottom */
+  #sidebarNav {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  #sidebarCta {
+    flex-shrink: 0;
+  }
+  
+  /* When sidebar is open - slide down with shadow */
+  #sidebar.translate-y-0 {
+    transform: translateX(-50%) translateY(0) !important;
+    opacity: 1;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Staggered animation for menu items when sidebar opens */
+  @keyframes sidebarItemIn {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link {
+    opacity: 0;
+    animation: sidebarItemIn 0.4s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  }
+  
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(1) { animation-delay: 0.05s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(2) { animation-delay: 0.1s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(3) { animation-delay: 0.15s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(4) { animation-delay: 0.2s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(5) { animation-delay: 0.25s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(6) { animation-delay: 0.3s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(7) { animation-delay: 0.35s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(8) { animation-delay: 0.4s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(9) { animation-delay: 0.45s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(10) { animation-delay: 0.5s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(11) { animation-delay: 0.55s; }
+  #sidebar.sidebar-animate-items.translate-y-0 .sidebar-nav-link:nth-child(12) { animation-delay: 0.6s; }
+  
+  /* CTA button staggered */
+  #sidebar.sidebar-animate-items.translate-y-0 .mt-4 a {
+    opacity: 0;
+    animation: sidebarItemIn 0.4s cubic-bezier(0.32, 0.72, 0, 1) 0.35s forwards;
+  }
+  
+  /* Active Menu Item - same blue as connection icon */
+  .sidebar-nav-link.active {
+    background-color: #2B82C3 !important;
+    color: #fff !important;
+    font-weight: 600;
+  }
+  
+  .sidebar-nav-link {
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .sidebar-nav-link:hover:not(.active) {
+    transform: translateX(4px);
+  }
+  
+  /* Close button hover animation */
+  #sidebarCloseBtn {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  #sidebarCloseBtn:hover {
+    transform: scale(1.08);
+  }
+  
+  /* Nav section: very light separation (shadow); #sidebarNav keeps flex/scroll from above */
+  nav.flex.flex-col,
+  #sidebarNav {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  
+  /* Sidebar text sizes - larger */
+  #sidebar {
+    font-size: 1.25rem; /* Base font size */
+  }
+  
+  #sidebar .sidebar-nav-link {
+    font-size: 1.25rem;
+  }
+  
+  /* Category images in sidebar - bigger */
+  #sidebar .sidebar-nav-link img,
+  #sidebar .sidebar-nav-link .rounded-lg {
+    width: 6rem;
+    height: 6rem;
+  }
+  
+  /* Header has dir="ltr" in HTML - logo and close icon never change direction */
+  /* RTL: من اليمين لليسار - الصورة ثم اسم الصنف (لا عكس) */
+  #sidebarNav[dir="rtl"] .sidebar-nav-link {
+    text-align: right;
+  }
+  #sidebarNav[dir="rtl"] .sidebar-nav-link .flex-1 {
+    text-align: right;
+  }
+</style>
+
+<nav class="bg-[#131a26] shadow-lg sticky top-0 z-50 w-full rounded-b-2xl p-1 mt-0 mb-3" dir="ltr">
+  <div class="flex items-center justify-between px-4 py-1.5">
+    <!-- Logo -->
+    <div class="flex-shrink-0 flex items-center">
+      <a href="{% url 'index' %}" aria-label="الصفحة الرئيسية" class="flex items-center">
+        <img src="{% static 'images/logo2.png' %}" 
+             alt="شعار المؤسسة"
+             class="h-16 md:h-24 lg:h-28 w-auto object-contain transition-all duration-200"
+             style="max-width:320px;"
+             loading="eager">
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <div class="hidden lg:flex items-center gap-4">
+      <!-- Language Selector -->
+      <div id="test" class="relative group">
+        <button id="langBtn" 
+                class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 flex items-center gap-2.5 focus:outline-none text-white transition-all duration-300 shadow-md hover:shadow-lg">
+          <span id="currentLangFlag" class="lang-flag flag-fr"></span>
+          <span id="currentLangLabel" class="font-medium">Français</span>
+          <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+        </button>
+        <div id="langMenu" class="lang-menu absolute left-0 mt-2 w-full bg-white/95 backdrop-blur-md text-gray-900 rounded-xl shadow-2xl hidden z-50 overflow-hidden border border-gray-200/50">
+          <div class="p-1.5">
+            <button onclick="changeLanguage('Français')" 
+                    data-lang="Français"
+                    class="lang-option flex items-center gap-3 px-4 py-3 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
+              <span class="lang-flag flag-fr"></span>
+              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors">Français</span>
+            </button>
+            <button onclick="changeLanguage('العربية')" 
+                    data-lang="العربية"
+                    class="lang-option flex items-center gap-3 px-4 py-3 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
+              <span class="lang-flag flag-mr"></span>
+              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors">العربية</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme Toggle -->
+      <button id="themeToggle" 
+              class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 flex items-center gap-1 focus:outline-none transition-colors" 
+              aria-label="Dark/Light mode">
+        <i class="fa-solid fa-moon text-xl hidden text-white" id="moonIcon"></i>
+      </button>
+
+      <!-- Login Button -->
+      <a href="{% url 'login' %}" 
+         class="px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center justify-center transition-colors" 
+         title="تسجيل الدخول"
+         aria-label="تسجيل الدخول">
+        <i class="fa-solid fa-user text-xl"></i>
+      </a>
+
+      <!-- Cart -->
+      <a href="{% url 'users:cart' %}" 
+         class="relative flex items-center transition-transform hover:scale-110 pt-1"
+         aria-label="السلة">
+        <i class="fa-solid fa-shopping-cart text-[1.5rem] text-white"></i>
+        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+      </a>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="flex lg:hidden items-center gap-4">
+      <div id="test-mobile" class="relative group">
+        <button id="langBtnMobile" 
+                class="px-4 sm:px-3 py-3 sm:py-2 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 flex items-center justify-center gap-2.5 sm:gap-2 focus:outline-none text-white transition-all duration-300 shadow-md">
+          <span id="currentLangFlagMobile" class="lang-flag flag-fr flex-shrink-0" style="width: 32px; height: 24px;"></span>
+          <span id="currentLangLabelMobile" class="text-xl sm:text-lg font-medium">Français</span>
+          <i class="fa-solid fa-chevron-down text-sm sm:text-xs transition-transform duration-300 flex-shrink-0"></i>
+        </button>
+        <div id="langMenuMobile" class="lang-menu absolute left-0 mt-2 w-full bg-white/95 backdrop-blur-md text-gray-900 rounded-xl shadow-2xl hidden z-50 overflow-hidden border border-gray-200/50">
+          <div class="py-2 sm:py-1.5 px-0 sm:px-1.5">
+            <button onclick="changeLanguage('Français')" 
+                    data-lang="Français"
+                    class="lang-option flex items-center gap-3 sm:gap-3 px-3 sm:px-4 py-4 sm:py-3.5 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
+              <span class="lang-flag flag-fr flex-shrink-0" style="width: 32px; height: 24px;"></span>
+              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors text-lg sm:text-lg whitespace-nowrap flex-1">Français</span>
+            </button>
+            <button onclick="changeLanguage('العربية')" 
+                    data-lang="العربية"
+                    class="lang-option flex items-center gap-3 sm:gap-3 px-3 sm:px-4 py-4 sm:py-3.5 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
+              <span class="lang-flag flag-mr flex-shrink-0" style="width: 32px; height: 24px;"></span>
+              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors text-lg sm:text-lg whitespace-nowrap flex-1">العربية</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <a href="{% url 'login' %}" 
+         class="px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center justify-center transition-colors"
+         aria-label="تسجيل الدخول">
+        <i class="fa-solid fa-user text-2xl"></i>
+      </a>
+      
+      <button id="sidebarOpenBtn" 
+              class="p-3 rounded-lg hover:bg-gray-700 transition-colors"
+              aria-label="فتح القائمة">
+        <i class="fa-solid fa-bars text-white text-2xl"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay - fades in when sidebar opens, click to close -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-[99] opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"></div>
+
+  <!-- Sidebar Panel (Auto height, 80% width, centered) - Hidden by default -->
+  <div id="sidebar" class="sidebar-animate-items fixed top-0 left-1/2 -translate-x-1/2 w-[88%] bg-gray-900 text-white z-[100] transform -translate-y-full overflow-hidden" style="display: none; margin-left: auto; margin-right: auto; height: 82vh; max-height: 82vh;">
+    <div id="sidebarContent" class="flex flex-col pt-4 px-4 pb-2">
+      <!-- Header: always LTR (logo + close icon) -->
+      <div id="sidebarHeader" class="flex items-center justify-between mb-4 flex-shrink-0" dir="ltr">
+        <div class="flex items-center">
+          <img src="{% static 'images/logo2.png' %}" 
+               alt="شعار المؤسسة" 
+               class="h-16 md:h-24 lg:h-28 w-auto object-contain transition-all duration-200"
+               style="max-width: 320px;"
+               loading="lazy">
+        </div>
+        <button id="sidebarCloseBtn" 
+                class="w-20 h-20 rounded-full bg-gray-800/80 hover:bg-gray-700 flex items-center justify-center text-white text-5xl transition-colors"
+                aria-label="إغلاق القائمة">
+          ×
+        </button>
+      </div>
+
+      <!-- Menu: dir set by JS (rtl/ltr). Order: image then name - من اليمين لليسار في العربية -->
+      <nav id="sidebarNav" class="flex flex-col gap-2 mb-2 rounded-lg p-6 flex-1 min-h-0 overflow-y-auto" dir="ltr">
+        {% for category in categorys %}
+          <a href="{% url 'products' %}?category={{category.nameFr}}" 
+             class="sidebar-nav-link flex items-center gap-4 px-5 py-4 rounded-xl text-white hover:bg-gray-800/50 transition-all duration-200"
+             data-category="{{category.nameFr}}">
+            <!-- الصورة ثم اسم الصنف (في العربية: من اليمين لليسار) -->
+            <div class="rounded-lg overflow-hidden flex-shrink-0" style="width: 6rem; height: 6rem;">
+              <img src="{{ category.image.url }}" 
+                   alt="{{category.nameFr}}" 
+                   class="w-full h-full object-cover"
+                   loading="lazy">
+            </div>
+            <!-- Text Label (Fr/Ar switched by updateSidebarLanguage) -->
+            <span id="nav-cat-{{forloop.counter}}-fr" class="block flex-1 text-4xl">{{category.nameFr}}</span>
+            <span id="nav-cat-{{forloop.counter}}-ar" class="hidden flex-1 text-4xl">{{category.nameAr}}</span>
+          </a>
+        {% endfor %}
+      </nav>
+
+      <!-- Get in Touch Button - always visible at bottom -->
+      <div id="sidebarCta" class="mt-2 flex-shrink-0">
+        <a href="{% url 'about' %}" 
+           class="block w-full px-6 py-5 bg-[#2B82C3] hover:bg-[#1e5a8a] text-white font-semibold rounded-xl text-center transition-all duration-200 shadow-lg hover:shadow-xl text-3xl">
+          <span id="cta-fr" class="block">Nous contacter</span>
+          <span id="cta-ar" class="hidden">تواصل معنا</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Update language button with flag and text
+  function updateLanguageButton(lang) {
+    const currentLangLabel = document.getElementById('currentLangLabel');
+    const currentLangLabelMobile = document.getElementById('currentLangLabelMobile');
+    const currentLangFlag = document.getElementById('currentLangFlag');
+    const currentLangFlagMobile = document.getElementById('currentLangFlagMobile');
+    
+    // Update desktop button
+    if (currentLangLabel) {
+      currentLangLabel.textContent = lang;
+    }
+    if (currentLangFlag) {
+      currentLangFlag.className = 'lang-flag ' + (lang === 'Français' ? 'flag-fr' : 'flag-mr');
+    }
+    
+    // Update mobile button
+    if (currentLangLabelMobile) {
+      currentLangLabelMobile.textContent = lang;
+    }
+    if (currentLangFlagMobile) {
+      currentLangFlagMobile.className = 'lang-flag ' + (lang === 'Français' ? 'flag-fr' : 'flag-mr');
+    }
+    
+    // Check icons removed - no longer needed
+  }
+  
+  // Override changeLanguage to update button
+  function overrideChangeLanguage() {
+    if (window.changeLanguage) {
+      const originalChangeLanguage = window.changeLanguage;
+      window.changeLanguage = function(lang) {
+        updateLanguageButton(lang);
+        if (originalChangeLanguage) {
+          originalChangeLanguage(lang);
+        }
+      };
+      return true;
+    }
+    return false;
+  }
+  
+  // Set fixed width for language button based on the longest text
+  function setFixedLangButtonWidth() {
+    const langBtn = document.getElementById('langBtn');
+    const langBtnMobile = document.getElementById('langBtnMobile');
+    const currentLangLabel = document.getElementById('currentLangLabel');
+    const currentLangLabelMobile = document.getElementById('currentLangLabelMobile');
+    const currentLangFlag = document.getElementById('currentLangFlag');
+    const currentLangFlagMobile = document.getElementById('currentLangFlagMobile');
+    
+    if (langBtn && currentLangLabel && currentLangFlag) {
+      // Create temporary spans to measure both texts
+      const tempSpan1 = document.createElement('span');
+      tempSpan1.className = currentLangLabel.className;
+      tempSpan1.textContent = 'Français';
+      tempSpan1.style.visibility = 'hidden';
+      tempSpan1.style.position = 'absolute';
+      document.body.appendChild(tempSpan1);
+      
+      const tempSpan2 = document.createElement('span');
+      tempSpan2.className = currentLangLabel.className;
+      tempSpan2.textContent = 'العربية';
+      tempSpan2.style.visibility = 'hidden';
+      tempSpan2.style.position = 'absolute';
+      document.body.appendChild(tempSpan2);
+      
+      // Get the width of both texts
+      const widthFr = tempSpan1.offsetWidth;
+      const widthAr = tempSpan2.offsetWidth;
+      const maxTextWidth = Math.max(widthFr, widthAr);
+      
+      // Get flag and chevron width (they're the same for both)
+      const flagWidth = currentLangFlag.offsetWidth || 28;
+      const chevron = langBtn.querySelector('.fa-chevron-down');
+      const chevronWidth = chevron ? chevron.offsetWidth : 12;
+      
+      // Calculate total width: padding (px-4 = 16px each side) + gap (gap-2.5 = 10px) + flag + text + chevron
+      const padding = 32; // px-4 = 16px * 2
+      const gap = 20; // gap-2.5 = 10px * 2 (between flag-text and text-chevron)
+      const totalWidth = padding + gap + flagWidth + maxTextWidth + chevronWidth;
+      
+      // Set fixed width
+      langBtn.style.width = totalWidth + 'px';
+      langBtn.style.minWidth = totalWidth + 'px';
+      
+      // Clean up
+      document.body.removeChild(tempSpan1);
+      document.body.removeChild(tempSpan2);
+    }
+    
+    // Same for mobile
+    if (langBtnMobile && currentLangLabelMobile && currentLangFlagMobile) {
+      const tempSpan1 = document.createElement('span');
+      tempSpan1.className = currentLangLabelMobile.className;
+      tempSpan1.textContent = 'Français';
+      tempSpan1.style.visibility = 'hidden';
+      tempSpan1.style.position = 'absolute';
+      document.body.appendChild(tempSpan1);
+      
+      const tempSpan2 = document.createElement('span');
+      tempSpan2.className = currentLangLabelMobile.className;
+      tempSpan2.textContent = 'العربية';
+      tempSpan2.style.visibility = 'hidden';
+      tempSpan2.style.position = 'absolute';
+      document.body.appendChild(tempSpan2);
+      
+      const widthFr = tempSpan1.offsetWidth;
+      const widthAr = tempSpan2.offsetWidth;
+      const maxTextWidth = Math.max(widthFr, widthAr);
+      
+      const flagWidth = currentLangFlagMobile.offsetWidth || 28;
+      const chevron = langBtnMobile.querySelector('.fa-chevron-down');
+      const chevronWidth = chevron ? chevron.offsetWidth : 12;
+      
+      const padding = 24; // px-3 = 12px * 2
+      const gap = 16; // gap-2 = 8px * 2
+      const totalWidth = padding + gap + flagWidth + maxTextWidth + chevronWidth + 2; // Add 2px extra width
+      
+      langBtnMobile.style.width = totalWidth + 'px';
+      langBtnMobile.style.minWidth = totalWidth + 'px';
+      
+      document.body.removeChild(tempSpan1);
+      document.body.removeChild(tempSpan2);
+    }
+  }
+  
+  // Enhance language menu interaction
+  document.addEventListener('DOMContentLoaded', function() {
+    // Try to override changeLanguage immediately
+    if (!overrideChangeLanguage()) {
+      // If not available, wait a bit and try again
+      setTimeout(function() {
+        overrideChangeLanguage();
+      }, 100);
+    }
+    
+    const langBtn = document.getElementById('langBtn');
+    const langBtnMobile = document.getElementById('langBtnMobile');
+    const langMenu = document.getElementById('langMenu');
+    const langMenuMobile = document.getElementById('langMenuMobile');
+    
+    // Set fixed width for language buttons
+    setTimeout(setFixedLangButtonWidth, 100); // Small delay to ensure fonts are loaded
+    
+    // Initialize with saved language
+    const savedLang = localStorage.getItem('selectedLanguage') || 'Français';
+    updateLanguageButton(savedLang);
+    
+    // Desktop chevron rotation
+    if (langBtn && langMenu) {
+      langBtn.addEventListener('click', function() {
+        const chevron = langBtn.querySelector('.fa-chevron-down');
+        if (chevron) {
+          chevron.style.transform = langMenu.classList.contains('hidden') 
+            ? 'rotate(0deg)' 
+            : 'rotate(180deg)';
+        }
+      });
+    }
+    
+    // Mobile chevron rotation
+    if (langBtnMobile && langMenuMobile) {
+      langBtnMobile.addEventListener('click', function() {
+        const chevron = langBtnMobile.querySelector('.fa-chevron-down');
+        if (chevron) {
+          chevron.style.transform = langMenuMobile.classList.contains('hidden') 
+            ? 'rotate(0deg)' 
+            : 'rotate(180deg)';
+        }
+      });
+    }
+  });
+  
+  // Also try on window load
+  window.addEventListener('load', function() {
+    overrideChangeLanguage();
+    const savedLang = localStorage.getItem('selectedLanguage') || 'Français';
+    updateLanguageButton(savedLang);
+    setFixedLangButtonWidth(); // Set fixed width after page loads
+  });
+  
+  // Sidebar functionality - New Design
+  (function() {
+    let sidebarBtn, sidebar, sidebarOverlay, closeBtn;
+    let isOpen = false;
+    
+    function openSidebar() {
+      if (!sidebar) return;
+      
+      isOpen = true;
+      document.body.classList.add('sidebar-open');
+      
+      // Show overlay with fade-in
+      if (sidebarOverlay) {
+        sidebarOverlay.style.display = 'block';
+        sidebarOverlay.style.visibility = 'visible';
+        void sidebarOverlay.offsetWidth;
+        sidebarOverlay.classList.add('opacity-100', 'pointer-events-auto');
+        sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      }
+      
+      // Show sidebar panel and restart staggered animation
+      sidebar.style.display = 'flex';
+      sidebar.style.width = '88%';
+      sidebar.style.height = '82vh';
+      sidebar.style.maxHeight = '82vh';
+      sidebar.style.top = '0';
+      sidebar.style.left = '50%';
+      sidebar.style.marginLeft = 'auto';
+      sidebar.style.marginRight = 'auto';
+      sidebar.classList.remove('sidebar-animate-items');
+      void sidebar.offsetWidth;
+      sidebar.classList.add('sidebar-animate-items');
+      sidebar.classList.remove('-translate-y-full');
+      sidebar.classList.add('translate-y-0');
+      
+      // Focus first category link when sidebar opens (after a short delay so animation starts)
+      setTimeout(function() {
+        var firstLink = sidebar.querySelector('.sidebar-nav-link');
+        if (firstLink) {
+          firstLink.focus();
+        }
+      }, 150);
+    }
+    
+    function closeSidebar() {
+      if (!sidebar || !sidebarOverlay) return;
+      
+      isOpen = false;
+      document.body.classList.remove('sidebar-open');
+      
+      // Hide overlay (animate, then hide display)
+      sidebarOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+      sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+      
+      // Hide sidebar panel (slide to top, then hide display)
+      sidebar.classList.remove('translate-y-0');
+      sidebar.classList.add('-translate-y-full');
+      
+      // After animation completes, hide display
+      setTimeout(function() {
+        if (!isOpen) {
+          if (sidebarOverlay) {
+            sidebarOverlay.style.display = '';
+            sidebarOverlay.style.visibility = '';
+          }
+          sidebar.style.display = 'none';
+          sidebar.style.width = '';
+          sidebar.style.height = '';
+          sidebar.style.maxHeight = '';
+          sidebar.style.top = '';
+          sidebar.style.left = '';
+          sidebar.style.marginLeft = '';
+          sidebar.style.marginRight = '';
+        }
+      }, 400); // Match transition duration
+    }
+    
+    function initSidebar() {
+      sidebarBtn = document.getElementById('sidebarOpenBtn');
+      sidebar = document.getElementById('sidebar');
+      sidebarOverlay = document.getElementById('sidebarOverlay');
+      closeBtn = document.getElementById('sidebarCloseBtn');
+      
+      if (!sidebarBtn || !sidebar) return false;
+      
+      // Open sidebar button
+      sidebarBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        openSidebar();
+      });
+      
+      // Close button
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          closeSidebar();
+        });
+      }
+      
+      // Overlay click to close
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+      
+      // ESC key to close
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isOpen) {
+          closeSidebar();
+        }
+      });
+      
+      // Prevent clicks inside sidebar from closing it
+      if (sidebar) {
+        sidebar.addEventListener('click', function(e) {
+          e.stopPropagation();
+        });
+      }
+      
+      return true;
+    }
+    
+    // Set active navigation link: current page category gets blue, stays until another is selected
+    function setActiveNavLink() {
+      const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+      const currentParams = new URLSearchParams(window.location.search);
+      const currentCategory = currentParams.get('category');
+      const navLinks = document.querySelectorAll('.sidebar-nav-link');
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href');
+        if (!href) return;
+        const [linkPath, linkSearch] = href.split('?');
+        const pathNorm = (linkPath || '/').replace(/\/$/, '') || '/';
+        if (currentPath !== pathNorm && !currentPath.startsWith(pathNorm + '/')) return;
+        const params = new URLSearchParams(linkSearch || '');
+        const linkCategory = params.get('category');
+        if (linkCategory && currentCategory && decodeURIComponent(linkCategory) === decodeURIComponent(currentCategory)) {
+          link.classList.add('active');
+        } else if (!linkCategory && !currentCategory) {
+          link.classList.add('active');
+        }
+      });
+    }
+    
+    // On category click: give it blue, remove from others (stays until another is selected)
+    function setupSidebarCategoryClick() {
+      const navLinks = document.querySelectorAll('.sidebar-nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          navLinks.forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    }
+    
+    // Update sidebar content when language changes (works even when sidebar is closed)
+    function updateSidebarLanguage(lang) {
+      const sidebarNav = document.getElementById('sidebarNav');
+      if (sidebarNav) {
+        sidebarNav.setAttribute('dir', lang === 'العربية' ? 'rtl' : 'ltr');
+      }
+      
+      // Update category names (show Arabic or French)
+      const navLinks = document.querySelectorAll('.sidebar-nav-link');
+      navLinks.forEach((link, index) => {
+        const frSpan = document.getElementById(`nav-cat-${index + 1}-fr`);
+        const arSpan = document.getElementById(`nav-cat-${index + 1}-ar`);
+        
+        if (lang === 'العربية') {
+          if (frSpan) frSpan.classList.add('hidden');
+          if (arSpan) arSpan.classList.remove('hidden');
+        } else {
+          if (frSpan) frSpan.classList.remove('hidden');
+          if (arSpan) arSpan.classList.add('hidden');
+        }
+      });
+      
+      // Update CTA button
+      const ctaFr = document.getElementById('cta-fr');
+      const ctaAr = document.getElementById('cta-ar');
+      if (lang === 'العربية') {
+        if (ctaFr) ctaFr.classList.add('hidden');
+        if (ctaAr) ctaAr.classList.remove('hidden');
+      } else {
+        if (ctaFr) ctaFr.classList.remove('hidden');
+        if (ctaAr) ctaAr.classList.add('hidden');
+      }
+    }
+    window.updateSidebarLanguage = updateSidebarLanguage;
+    
+    function wrapChangeLanguageForSidebar() {
+      var orig = window.changeLanguage;
+      if (orig) {
+        window.changeLanguage = function(lang) {
+          orig(lang);
+          updateSidebarLanguage(lang);
+        };
+        return true;
+      }
+      return false;
+    }
+    
+    // Initialize
+    function init() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          if (initSidebar()) {
+            setActiveNavLink();
+            setupSidebarCategoryClick();
+            wrapChangeLanguageForSidebar();
+            var savedLang = localStorage.getItem('selectedLanguage') || 'Français';
+            updateSidebarLanguage(savedLang);
+          }
+        });
+      } else {
+        if (initSidebar()) {
+          setActiveNavLink();
+          setupSidebarCategoryClick();
+          wrapChangeLanguageForSidebar();
+          var savedLang = localStorage.getItem('selectedLanguage') || 'Français';
+          updateSidebarLanguage(savedLang);
+        }
+      }
+      
+      // After translation.js runs (it sets changeLanguage in window.onload), wrap it so sidebar updates
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          setActiveNavLink();
+          setupSidebarCategoryClick();
+          wrapChangeLanguageForSidebar();
+          var savedLang = localStorage.getItem('selectedLanguage') || 'Français';
+          updateSidebarLanguage(savedLang);
+        }, 0);
+      });
+      
+      setTimeout(function() {
+        if (!sidebar || !sidebarBtn) {
+          if (initSidebar()) {
+            setActiveNavLink();
+            setupSidebarCategoryClick();
+            wrapChangeLanguageForSidebar();
+            var savedLang = localStorage.getItem('selectedLanguage') || 'Français';
+            updateSidebarLanguage(savedLang);
+          }
+        } else {
+          setActiveNavLink();
+          setupSidebarCategoryClick();
+        }
+      }, 500);
+    }
+    
+    init();
+  })();
+</script>
+
+

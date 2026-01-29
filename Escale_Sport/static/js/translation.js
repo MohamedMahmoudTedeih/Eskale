@@ -179,6 +179,11 @@ window.onload = function () {
     // Store selection
     localStorage.setItem("selectedLanguage", lang);
 
+    // Update navbar sidebar (categories + CTA + dir) without reload
+    if (window.updateSidebarLanguage) {
+      window.updateSidebarLanguage(lang);
+    }
+
     // Hide dropdown
     const langMenu = document.getElementById("langMenu");
     if (langMenu) langMenu.classList.add("hidden");
