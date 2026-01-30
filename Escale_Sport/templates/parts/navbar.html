@@ -17,11 +17,43 @@
   [dir="rtl"] .text-left { text-align: right; }
   [dir="rtl"] .text-right { text-align: left; }
   
-  /* Language Menu Styles */
+  /* Language Menu Styles - width always = language button (same parent) */
   .lang-menu {
     animation: slideDown 0.3s ease-out;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .lang-menu .lang-menu-inner {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.15rem;
+    padding-right: 0.15rem;
+  }
+  @media (max-width: 1023px) {
+    #currentLangFlagMobile {
+      width: 54px !important;
+      height: 38px !important;
+      flex-shrink: 0;
+    }
+    .lang-option-mobile .lang-flag-lg {
+      width: 62px;
+      height: 44px;
+    }
+  }
+  @media (min-width: 1024px) {
+    #currentLangFlag {
+      width: 42px !important;
+      height: 28px !important;
+    }
+    #langMenu .lang-flag-lg {
+      width: 44px;
+      height: 30px;
+    }
   }
   
   @keyframes slideDown {
@@ -57,13 +89,17 @@
   }
   
   .lang-flag {
-    width: 28px;
-    height: 20px;
-    border-radius: 4px;
+    width: 42px;
+    height: 30px;
+    border-radius: 5px;
     object-fit: cover;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     display: inline-block;
     flex-shrink: 0;
+  }
+  .lang-flag-lg {
+    width: 52px;
+    height: 38px;
   }
   
   .flag-fr {
@@ -83,10 +119,11 @@
   .flag-mr::before {
     content: '☪';
     position: absolute;
-    font-size: 14px;
+    font-size: 20px;
     color: #FFD700;
     text-shadow: 0 0 2px rgba(0,0,0,0.3);
   }
+  .lang-flag-lg.flag-mr::before { font-size: 26px; }
   
   /* Sidebar Styles */
   /* Prevent body scroll when sidebar is open */
@@ -241,41 +278,40 @@
   }
 </style>
 
-<nav class="bg-[#131a26] shadow-lg sticky top-0 z-50 w-full rounded-b-2xl p-1 mt-0 mb-3" dir="ltr">
-  <div class="flex items-center justify-between px-4 py-1.5">
+<nav class="bg-[#131a26] shadow-lg sticky top-0 z-50 w-full rounded-b-2xl py-2 lg:py-px px-1 mt-0 mb-3" dir="ltr">
+  <div class="flex items-center justify-between px-4 py-3 lg:px-3 lg:pt-px lg:pb-px">
     <!-- Logo -->
     <div class="flex-shrink-0 flex items-center">
       <a href="{% url 'index' %}" aria-label="الصفحة الرئيسية" class="flex items-center">
-        <img src="{% static 'images/logo2.png' %}" 
+        <img src="{% static 'images/logo3.png' %}" 
              alt="شعار المؤسسة"
-             class="h-16 md:h-24 lg:h-28 w-auto object-contain transition-all duration-200"
-             style="max-width:320px;"
+             class="h-20 md:h-28 lg:h-24 w-auto object-contain transition-all duration-200 max-w-[360px] lg:max-w-[300px]"
              loading="eager">
       </a>
     </div>
 
     <!-- Desktop Navigation -->
-    <div class="hidden lg:flex items-center gap-4">
+    <div class="hidden lg:flex items-center gap-2">
       <!-- Language Selector -->
       <div id="test" class="relative group">
         <button id="langBtn" 
-                class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 flex items-center gap-2.5 focus:outline-none text-white transition-all duration-300 shadow-md hover:shadow-lg">
+                class="px-5 py-2.5 lg:px-4 lg:py-2 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 flex items-center gap-4 lg:gap-3 focus:outline-none text-white transition-all duration-300 shadow-md hover:shadow-lg text-3xl lg:text-2xl min-w-[260px] lg:min-w-[220px]">
           <span id="currentLangFlag" class="lang-flag flag-fr"></span>
-          <span id="currentLangLabel" class="font-medium">Français</span>
-          <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+          <span id="currentLangLabel" class="font-medium text-3xl lg:text-2xl">Français</span>
+          <i class="fa-solid fa-chevron-down text-2xl lg:text-xl transition-transform duration-300"></i>
         </button>
         <div id="langMenu" class="lang-menu absolute left-0 mt-2 w-full bg-white/95 backdrop-blur-md text-gray-900 rounded-xl shadow-2xl hidden z-50 overflow-hidden border border-gray-200/50">
-          <div class="p-1.5">
+          <div class="lang-menu-inner">
             <button onclick="changeLanguage('Français')" 
                     data-lang="Français"
-                    class="lang-option flex items-center gap-3 px-4 py-3 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
-              <span class="lang-flag flag-fr"></span>
+                    class="lang-option flex items-center gap-4 px-3 py-5 lg:py-3 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group text-3xl lg:text-2xl">
+              <span class="lang-flag lang-flag-lg flag-fr"></span>
               <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors">Français</span>
             </button>
             <button onclick="changeLanguage('العربية')" 
                     data-lang="العربية"
-                    class="lang-option flex items-center gap-3 px-4 py-3 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
-              <span class="lang-flag flag-mr"></span>
+                    class="lang-option flex items-center gap-4 px-3 py-5 lg:py-3 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group text-3xl lg:text-2xl">
+              <span class="lang-flag lang-flag-lg flag-mr"></span>
               <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors">العربية</span>
             </button>
           </div>
@@ -284,65 +320,65 @@
 
       <!-- Theme Toggle -->
       <button id="themeToggle" 
-              class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 flex items-center gap-1 focus:outline-none transition-colors" 
+              class="px-4 py-3 lg:px-2 lg:py-0.5 rounded-xl bg-gray-800 hover:bg-gray-700 flex items-center gap-1 focus:outline-none transition-colors" 
               aria-label="Dark/Light mode">
-        <i class="fa-solid fa-moon text-xl hidden text-white" id="moonIcon"></i>
+        <i class="fa-solid fa-moon text-4xl lg:text-base hidden text-white" id="moonIcon"></i>
       </button>
 
       <!-- Login Button -->
       <a href="{% url 'login' %}" 
-         class="px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center justify-center transition-colors" 
+         class="px-4 py-3 lg:px-2 lg:py-0.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center justify-center transition-colors" 
          title="تسجيل الدخول"
          aria-label="تسجيل الدخول">
-        <i class="fa-solid fa-user text-xl"></i>
+        <i class="fa-solid fa-user text-4xl lg:text-base"></i>
       </a>
 
       <!-- Cart -->
       <a href="{% url 'users:cart' %}" 
-         class="relative flex items-center transition-transform hover:scale-110 pt-1"
+         class="relative flex items-center transition-transform hover:scale-110 pt-1 lg:pt-0.5"
          aria-label="السلة">
-        <i class="fa-solid fa-shopping-cart text-[1.5rem] text-white"></i>
-        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+        <i class="fa-solid fa-shopping-cart text-4xl lg:text-[2rem] text-white"></i>
+        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-600 text-white text-base lg:text-sm font-bold rounded-full w-7 h-7 lg:w-6 lg:h-6 flex items-center justify-center">0</span>
       </a>
     </div>
 
-    <!-- Mobile Navigation -->
-    <div class="flex lg:hidden items-center gap-4">
+    <!-- Mobile Navigation - larger icons & language for phone -->
+    <div class="flex lg:hidden items-center gap-3">
       <div id="test-mobile" class="relative group">
         <button id="langBtnMobile" 
-                class="px-4 sm:px-3 py-3 sm:py-2 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 flex items-center justify-center gap-2.5 sm:gap-2 focus:outline-none text-white transition-all duration-300 shadow-md">
-          <span id="currentLangFlagMobile" class="lang-flag flag-fr flex-shrink-0" style="width: 32px; height: 24px;"></span>
-          <span id="currentLangLabelMobile" class="text-xl sm:text-lg font-medium">Français</span>
-          <i class="fa-solid fa-chevron-down text-sm sm:text-xs transition-transform duration-300 flex-shrink-0"></i>
+                class="px-6 py-3 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 flex items-center justify-center gap-5 focus:outline-none text-white transition-all duration-300 shadow-md text-[2.25rem] min-w-[340px]">
+          <span id="currentLangFlagMobile" class="lang-flag flag-fr flex-shrink-0"></span>
+          <span id="currentLangLabelMobile" class="font-medium text-[2.25rem]">Français</span>
+          <i class="fa-solid fa-chevron-down text-3xl transition-transform duration-300 flex-shrink-0"></i>
         </button>
-        <div id="langMenuMobile" class="lang-menu absolute left-0 mt-2 w-full bg-white/95 backdrop-blur-md text-gray-900 rounded-xl shadow-2xl hidden z-50 overflow-hidden border border-gray-200/50">
-          <div class="py-2 sm:py-1.5 px-0 sm:px-1.5">
+        <div id="langMenuMobile" class="lang-menu lang-menu-mobile absolute left-0 mt-2 bg-white/95 backdrop-blur-md text-gray-900 rounded-xl shadow-2xl hidden z-50 overflow-hidden border border-gray-200/50">
+          <div class="lang-menu-inner">
             <button onclick="changeLanguage('Français')" 
                     data-lang="Français"
-                    class="lang-option flex items-center gap-3 sm:gap-3 px-3 sm:px-4 py-4 sm:py-3.5 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
-              <span class="lang-flag flag-fr flex-shrink-0" style="width: 32px; height: 24px;"></span>
-              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors text-lg sm:text-lg whitespace-nowrap flex-1">Français</span>
+                    class="lang-option lang-option-mobile flex items-center gap-4 px-2 py-5 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group text-[2.25rem]">
+              <span class="lang-flag lang-flag-lg flag-fr flex-shrink-0"></span>
+              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors whitespace-nowrap flex-1">Français</span>
             </button>
             <button onclick="changeLanguage('العربية')" 
                     data-lang="العربية"
-                    class="lang-option flex items-center gap-3 sm:gap-3 px-3 sm:px-4 py-4 sm:py-3.5 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
-              <span class="lang-flag flag-mr flex-shrink-0" style="width: 32px; height: 24px;"></span>
-              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors text-lg sm:text-lg whitespace-nowrap flex-1">العربية</span>
+                    class="lang-option lang-option-mobile flex items-center gap-4 px-2 py-5 w-full text-left rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group text-[2.25rem]">
+              <span class="lang-flag lang-flag-lg flag-mr flex-shrink-0"></span>
+              <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors whitespace-nowrap flex-1">العربية</span>
             </button>
           </div>
         </div>
       </div>
       
       <a href="{% url 'login' %}" 
-         class="px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center justify-center transition-colors"
+         class="px-4 py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold flex items-center justify-center transition-colors"
          aria-label="تسجيل الدخول">
-        <i class="fa-solid fa-user text-2xl"></i>
+        <i class="fa-solid fa-user text-[3.5rem]"></i>
       </a>
       
       <button id="sidebarOpenBtn" 
               class="p-3 rounded-lg hover:bg-gray-700 transition-colors"
               aria-label="فتح القائمة">
-        <i class="fa-solid fa-bars text-white text-2xl"></i>
+        <i class="fa-solid fa-bars text-white text-[4.5rem]"></i>
       </button>
     </div>
   </div>
@@ -356,10 +392,10 @@
       <!-- Header: always LTR (logo + close icon) -->
       <div id="sidebarHeader" class="flex items-center justify-between mb-4 flex-shrink-0" dir="ltr">
         <div class="flex items-center">
-          <img src="{% static 'images/logo2.png' %}" 
+          <img src="{% static 'images/logo3.png' %}" 
                alt="شعار المؤسسة" 
-               class="h-16 md:h-24 lg:h-28 w-auto object-contain transition-all duration-200"
-               style="max-width: 320px;"
+               class="h-20 md:h-28 lg:h-32 w-auto object-contain transition-all duration-200"
+               style="max-width: 360px;"
                loading="lazy">
         </div>
         <button id="sidebarCloseBtn" 
@@ -473,17 +509,14 @@
       const widthAr = tempSpan2.offsetWidth;
       const maxTextWidth = Math.max(widthFr, widthAr);
       
-      // Get flag and chevron width (they're the same for both)
-      const flagWidth = currentLangFlag.offsetWidth || 28;
+      const flagWidth = currentLangFlag.offsetWidth || 42;
       const chevron = langBtn.querySelector('.fa-chevron-down');
-      const chevronWidth = chevron ? chevron.offsetWidth : 12;
+      const chevronWidth = chevron ? chevron.offsetWidth : 20;
       
-      // Calculate total width: padding (px-4 = 16px each side) + gap (gap-2.5 = 10px) + flag + text + chevron
-      const padding = 32; // px-4 = 16px * 2
-      const gap = 20; // gap-2.5 = 10px * 2 (between flag-text and text-chevron)
-      const totalWidth = padding + gap + flagWidth + maxTextWidth + chevronWidth;
+      const padding = 32; // lg:px-4
+      const gap = 24; // lg:gap-3
+      const totalWidth = Math.max(220, padding + gap + flagWidth + maxTextWidth + chevronWidth);
       
-      // Set fixed width
       langBtn.style.width = totalWidth + 'px';
       langBtn.style.minWidth = totalWidth + 'px';
       
@@ -512,13 +545,13 @@
       const widthAr = tempSpan2.offsetWidth;
       const maxTextWidth = Math.max(widthFr, widthAr);
       
-      const flagWidth = currentLangFlagMobile.offsetWidth || 28;
+      const flagWidth = currentLangFlagMobile.offsetWidth || 54;
       const chevron = langBtnMobile.querySelector('.fa-chevron-down');
-      const chevronWidth = chevron ? chevron.offsetWidth : 12;
+      const chevronWidth = chevron ? chevron.offsetWidth : 28;
       
-      const padding = 24; // px-3 = 12px * 2
-      const gap = 16; // gap-2 = 8px * 2
-      const totalWidth = padding + gap + flagWidth + maxTextWidth + chevronWidth + 2; // Add 2px extra width
+      const padding = 48; // px-6 = 24px * 2
+      const gap = 30; // gap-5
+      const totalWidth = Math.max(340, padding + gap + flagWidth + maxTextWidth + chevronWidth + 8);
       
       langBtnMobile.style.width = totalWidth + 'px';
       langBtnMobile.style.minWidth = totalWidth + 'px';
